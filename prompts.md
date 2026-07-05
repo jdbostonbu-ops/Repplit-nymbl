@@ -122,6 +122,9 @@ Already wired:
 - OpenAI script generation: use OPENAI_API_KEY server-side to generate a 60-second script preview.
 - Demo contact capture UI: Configure Video includes name, business, email, and phone fields in the submitted payload.
 - Generate My Video CTA UI: standalone themed button below the script preview boxes, with hover color shift and motion feedback.
+- Generate My Video webhook: submit to NEXT_PUBLIC_ZAPIER_WEBHOOK_URL through /api/request-video after an AI script exists.
+- Sheets / HeyGen webhook columns: Date, Name, Email, Phone, Business, Promoting, Vibe, Presenter, Script.
+- Footer contact copy: stack "Automate everything. Market like a machine." above "If you want to call us and talk to us directly, call us at 444-444-4444."
 - Vercel deployment: use vercel.json with SPA rewrites and dist/public output.
 - Logo asset: use public/nymbl-logo.svg for Nymbl branded artwork.
 - README live link: https://repplit-nymbl.vercel.app/
@@ -143,8 +146,6 @@ Key selling point: {sellingPoint}
 Write a polished 60-second social video script.
 
 Remaining future prompts:
-- Wire the Generate My Video CTA to the real video request workflow when the workflow destination is ready.
-- Wire the demo form to a real Zapier webhook when the workflow is ready to run live.
 - Replace the YouTube proof embed with the final public workflow demo video.
 - Embed real LinkedIn and Instagram proof posts once public.
 - Drop the final real AI-generated video into the showcase area if you want a finished proof asset.

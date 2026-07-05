@@ -935,13 +935,13 @@ export default function Home() {
           <div className="text-3xl font-bold tracking-tighter">
             NYMBL<span className="text-primary">.</span>
           </div>
-          <div className="text-center md:text-left text-muted-foreground font-mono text-sm">
-            Automate everything. Market like a machine.
-          </div>
-          <div className="text-xs text-muted-foreground/50 font-mono flex gap-4">
-            <span>Demo site</span>
-            <span>·</span>
-            <span>Stripe Test Mode - use card 4242 4242 4242 4242</span>
+          <div className="text-center md:text-left font-mono space-y-2">
+            <div className="text-[16px] text-muted-foreground">
+              Automate everything. Market like a machine.
+            </div>
+            <div className="text-[14px] text-muted-foreground/50">
+              If you want to call us and talk to us directly, call us at 444-444-4444.
+            </div>
           </div>
         </div>
       </footer>
