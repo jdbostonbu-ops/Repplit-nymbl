@@ -133,12 +133,6 @@ Built with 🔥 on [Replit](https://replit.com)
 
 ---
 
-## License
-
-MIT — use it, fork it, ship it.
-
----
-
 <div align="center">
 
 If this project helped you, please consider giving it a ⭐ — it helps others find it!
