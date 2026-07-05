@@ -104,7 +104,7 @@ Open `http://localhost:5173` in your browser.
 
 ## Launch Notes
 
-- Stripe is wired in test mode; switch from `sk_test_` to `sk_live_` only when ready to charge.
+- Stripe checkout needs these Vercel environment variables: `STRIPE_SECRET_KEY`, `STRIPE_PRICE_KICKSTART`, `STRIPE_PRICE_CRUISE`, and `STRIPE_PRICE_THROTTLE`. Use `sk_test_...` plus `price_...` IDs for test mode; switch to live values only when ready to charge.
 - Cal.com booking buttons use `NEXT_PUBLIC_CAL_LINK`.
 - OpenAI script generation uses `OPENAI_API_KEY` on the server.
 - The live app is deployed at [https://repplit-nymbl.vercel.app/](https://repplit-nymbl.vercel.app/).

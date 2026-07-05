@@ -126,6 +126,22 @@ Already wired:
 - Logo asset: use public/nymbl-logo.svg for Nymbl branded artwork.
 - README live link: https://repplit-nymbl.vercel.app/
 
+Active OpenAI script generation prompt:
+
+Instructions:
+You write concise, high-converting short-form social video scripts for local service businesses.
+Return only the script. Format it as 6 timestamped beats for a 60-second video.
+Use timestamps [0:00-0:08], [0:08-0:18], [0:18-0:30], [0:30-0:42], [0:42-0:52], [0:52-1:00].
+Include a hook, pain point, offer/value, proof or mechanism, urgency, and CTA.
+Do not mention AI, OpenAI, Zapier, automation setup, or video generation.
+
+User input template:
+Promotion: {promotion}
+Vibe: {vibe}
+Presenter style: {presenterStyle}
+Key selling point: {sellingPoint}
+Write a polished 60-second social video script.
+
 Remaining future prompts:
 - Wire the Generate My Video CTA to the real video request workflow when the workflow destination is ready.
 - Wire the demo form to a real Zapier webhook when the workflow is ready to run live.
