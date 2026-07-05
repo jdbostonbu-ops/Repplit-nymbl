@@ -355,7 +355,8 @@ export default function Home() {
               />
               
               <div className="absolute top-4 left-4 inline-flex items-center gap-2 px-2 py-1 bg-black/50 backdrop-blur border border-white/10 text-[10px] font-mono text-white/50 uppercase tracking-widest z-10">
-                AI Video Showcase
+                <Play className="w-3 h-3" />
+                AI Video Showcase - Your content goes here.
               </div>
             </motion.div>
           </div>
@@ -467,8 +468,12 @@ export default function Home() {
                   disabled={demoState === "generating"}
                   className="w-full h-14 text-sm font-mono uppercase tracking-widest bg-white text-black hover:bg-white/90 rounded-none transition-all"
                 >
-                  {demoState === "generating" ? "Generating..." : "Generate 60-Second Script"}
+                  {demoState === "generating" ? "Generating..." : "Generate Preview Script ->"}
                 </Button>
+
+                <p className="text-center text-xs text-muted-foreground font-mono mt-4">
+                  This is a script preview only. Real video delivery handled by our team.
+                </p>
               </form>
             </motion.div>
 
@@ -484,7 +489,7 @@ export default function Home() {
               <div className="flex items-center justify-between gap-4 mb-8">
                 <h3 className="text-2xl font-bold flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-cyan-400" />
-                  OpenAI Output
+                  Script Preview
                 </h3>
                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary border border-primary/30 bg-primary/10 px-2 py-1">
                   60 sec

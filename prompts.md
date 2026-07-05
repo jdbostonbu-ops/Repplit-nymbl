@@ -113,3 +113,23 @@ Go-Live Checklist
  Add your real domain (remove Replit dev URL)
 Emotional Direction for the Builder
 This landing page is for real business owners who will decide in 3 seconds whether Nymbl is worth their time. The gradient, the type scale, the scroll animations — they should all feel like Nymbl is already moving faster than everyone else. Electric. Confident. Inevitable. Don't play it safe. Safe is forgettable.
+
+Remaining Prompts / Current Implementation Notes
+
+Already wired:
+- Cal.com CTA: use NEXT_PUBLIC_CAL_LINK from .env for all "Book a 15-min Call" buttons.
+- Stripe test checkout: use STRIPE_SECRET_KEY plus STRIPE_PRICE_KICKSTART, STRIPE_PRICE_CRUISE, and STRIPE_PRICE_THROTTLE from .env.
+- OpenAI script generation: use OPENAI_API_KEY server-side to generate a 60-second script preview.
+- Vercel deployment: use vercel.json with SPA rewrites and dist/public output.
+- Logo asset: use public/nymbl-logo.svg for Nymbl branded artwork.
+- README live link: https://repplit-nymbl.vercel.app/
+
+Remaining future prompts:
+- Wire the demo form to a real Zapier webhook when the workflow is ready to run live.
+- Replace the YouTube proof embed with the final public workflow demo video.
+- Embed real LinkedIn and Instagram proof posts once public.
+- Drop the final real AI-generated video into the showcase area if you want a finished proof asset.
+- Swap Stripe sk_test_ keys to sk_live_ only when actually selling.
+- Confirm Cal.com production event URL before launch.
+- Add the final custom domain in Vercel and replace any Replit-era references in docs.
+- Keep .env, dist/, and node_modules/ ignored and untracked.
