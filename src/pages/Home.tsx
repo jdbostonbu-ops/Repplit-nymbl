@@ -52,7 +52,9 @@ const BookingButton = ({ bookingUrl, children, ...buttonProps }: BookingButtonPr
 
 export default function Home() {
   const [demoState, setDemoState] = useState<"idle" | "generating" | "done">("idle");
+  const [videoRequestState, setVideoRequestState] = useState<"idle" | "submitting" | "sent">("idle");
   const [scriptError, setScriptError] = useState("");
+  const [videoRequestError, setVideoRequestError] = useState("");
   const [generatedScript, setGeneratedScript] = useState("");
   const [contactName, setContactName] = useState("");
   const [business, setBusiness] = useState("");
@@ -76,7 +78,9 @@ export default function Home() {
   const handleGenerateScript = async (e: FormEvent) => {
     e.preventDefault();
     setScriptError("");
+    setVideoRequestError("");
     setGeneratedScript("");
+    setVideoRequestState("idle");
     setDemoState("generating");
 
     try {
@@ -105,6 +109,45 @@ export default function Home() {
     } catch (error) {
       setScriptError(error instanceof Error ? error.message : "Unable to generate script.");
       setDemoState("idle");
+    }
+  };
+
+  const handleVideoRequest = async () => {
+    setVideoRequestError("");
+
+    if (!generatedScript) {
+      setVideoRequestError("Generate the script first so it can be sent with your video request.");
+      return;
+    }
+
+    setVideoRequestState("submitting");
+
+    try {
+      const response = await fetch("/api/request-video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contactName,
+          business,
+          email,
+          phone,
+          promotion,
+          vibe,
+          presenterStyle,
+          sellingPoint,
+          script: generatedScript,
+        }),
+      });
+      const body: { error?: string; ok?: boolean } = await response.json();
+
+      if (!response.ok || !body.ok) {
+        throw new Error(body.error ?? "Unable to submit video request.");
+      }
+
+      setVideoRequestState("sent");
+    } catch (error) {
+      setVideoRequestError(error instanceof Error ? error.message : "Unable to submit video request.");
+      setVideoRequestState("idle");
     }
   };
 
@@ -606,15 +649,29 @@ export default function Home() {
                 )}
               </div>
 
-              <BookingButton
-                bookingUrl={bookingUrl}
+              {videoRequestError && (
+                <div className="border border-pink-500/30 bg-pink-500/10 p-4 font-mono text-sm text-pink-500">
+                  {videoRequestError}
+                </div>
+              )}
+
+              {videoRequestState === "sent" && (
+                <div className="border border-primary/30 bg-primary/10 p-4 font-mono text-sm text-primary">
+                  Video request sent.
+                </div>
+              )}
+
+              <Button
+                type="button"
+                disabled={!generatedScript || videoRequestState === "submitting"}
+                onClick={handleVideoRequest}
                 className="group h-16 w-full px-10 rounded-none border border-cyan-400/40 bg-gradient-to-r from-primary via-cyan-400 to-pink-500 bg-[length:300%_300%] text-black shadow-[0_0_38px_rgba(0,229,255,0.22)] animate-gradient-xy transition-all duration-300 hover:scale-[1.03] hover:from-pink-500 hover:via-primary hover:to-cyan-400 hover:text-white hover:shadow-[0_0_52px_rgba(236,72,153,0.34)] active:scale-[0.98]"
               >
                 <span className="flex items-center justify-center gap-3 font-mono text-sm uppercase tracking-widest">
                   <Video className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
-                  Generate My Video
+                  {videoRequestState === "submitting" ? "Sending Video Request..." : "Generate My Video"}
                 </span>
-              </BookingButton>
+              </Button>
             </motion.div>
           </div>
         </div>

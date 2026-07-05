@@ -33,6 +33,7 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 const openAiApiKey = process.env.OPENAI_API_KEY;
 const openAiModel = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
+const zapierWebhookUrl = process.env.NEXT_PUBLIC_ZAPIER_WEBHOOK_URL?.trim();
 
 const stripePrices = {
   kickstart: process.env.STRIPE_PRICE_KICKSTART,
@@ -117,6 +118,38 @@ function extractOpenAiScript(result) {
   }
 
   return textParts.join("\n\n").trim();
+}
+
+function buildVideoRequestPayload(body) {
+  const submittedAt = new Date().toISOString();
+
+  return {
+    Date: submittedAt.slice(0, 10),
+    Name: getStringField(body, "contactName"),
+    Email: getStringField(body, "email"),
+    Phone: getStringField(body, "phone"),
+    Business: getStringField(body, "business"),
+    Promoting: getStringField(body, "promotion"),
+    Vibe: getStringField(body, "vibe"),
+    Presenter: getStringField(body, "presenterStyle"),
+    Script: getStringField(body, "script"),
+    date: submittedAt.slice(0, 10),
+    requestDate: submittedAt.slice(0, 10),
+    submittedAt,
+    contactName: getStringField(body, "contactName"),
+    business: getStringField(body, "business"),
+    email: getStringField(body, "email"),
+    phone: getStringField(body, "phone"),
+    promotion: getStringField(body, "promotion"),
+    vibe: getStringField(body, "vibe"),
+    presenterStyle: getStringField(body, "presenterStyle"),
+    sellingPoint: getStringField(body, "sellingPoint"),
+    script: getStringField(body, "script"),
+    generatedScript: getStringField(body, "script"),
+    scriptGeneratedByAi: getStringField(body, "script"),
+    script_generated_by_ai: getStringField(body, "script"),
+    source: "nymbl-generate-my-video",
+  };
 }
 
 const basePath = (process.env.BASE_PATH ?? "/").replace(/\/$/, "") || "";
@@ -242,6 +275,43 @@ async function handleApi(req, res) {
       console.error("OpenAI script generation error:", error);
       sendJson(res, 500, {
         error: error instanceof Error ? error.message : "Unable to generate script",
+      });
+    }
+
+    return true;
+  }
+
+  if (req.url === "/api/request-video" && req.method === "POST") {
+    if (!zapierWebhookUrl) {
+      sendJson(res, 500, { error: "Missing NEXT_PUBLIC_ZAPIER_WEBHOOK_URL" });
+      return true;
+    }
+
+    try {
+      const body = await readJsonBody(req);
+      const payload = buildVideoRequestPayload(body);
+
+      if (!payload.email || !payload.script) {
+        sendJson(res, 400, { error: "Missing video request fields" });
+        return true;
+      }
+
+      const webhookResponse = await fetch(zapierWebhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!webhookResponse.ok) {
+        sendJson(res, 502, { error: "Video request webhook failed" });
+        return true;
+      }
+
+      sendJson(res, 200, { ok: true });
+    } catch (error) {
+      console.error("Video request webhook error:", error);
+      sendJson(res, 500, {
+        error: error instanceof Error ? error.message : "Unable to submit video request",
       });
     }
 
