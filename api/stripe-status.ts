@@ -1,3 +1,7 @@
+export const config = {
+  runtime: "edge",
+};
+
 type StripeStatusResponse = {
   configured: boolean;
   mode: "test" | "live" | "unknown";
