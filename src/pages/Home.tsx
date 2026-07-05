@@ -292,10 +292,10 @@ export default function Home() {
                   Scripts, voiceovers, captions, scheduling, and workflow handoff for high-converting social media content.
                 </p>
               </div>
-              <div className="mt-12 h-40 bg-white/5 rounded-lg border border-white/10 relative overflow-hidden flex items-center justify-center group-hover:scale-[1.02] transition-transform">
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/20 to-orange-500/20 animate-gradient-xy" />
+              <div className="mt-12 h-40 bg-cyan-400/[0.06] rounded-lg border border-cyan-400/20 relative overflow-hidden flex items-center justify-center group-hover:scale-[1.02] transition-transform">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-primary/15 to-pink-500/20 animate-gradient-xy" />
                 <div className="font-mono text-sm tracking-widest text-white/70 z-10 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-orange-400" /> Auto-posting enabled
+                  <Zap className="w-4 h-4 text-cyan-400" /> Auto-posting enabled
                 </div>
               </div>
             </motion.div>
