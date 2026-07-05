@@ -31,7 +31,7 @@ A high-energy demo landing page for a marketing automation business serving owne
 
 The site showcases the **AI Social Video** automation as its flagship feature while positioning Nymbl as a full-service automation partner across 9,000+ connected apps.
 
-> This is a **demo / prototype** — wired to Stripe test mode, placeholder booking links, and a simulated AI video script generator. Replace the placeholders listed in the Go-Live Checklist below before launching.
+> This is a deployed demo wired with Cal.com CTAs, Stripe test checkout, OpenAI script generation, and a YouTube workflow showcase.
 
 ---
 
@@ -39,13 +39,13 @@ The site showcases the **AI Social Video** automation as its flagship feature wh
 
 | Feature | Description |
 |---|---|
-| 🎬 **AI Social Video** | Interactive form that simulates an AI-generated video script from your prompt |
-| 📅 **Bookings via Cal.com** | "Book a 15-min Call" CTA throughout — drop in your Cal.com link to go live |
+| 🎬 **AI Social Video** | Interactive form that generates a 60-second script from your prompt |
+| 📅 **Bookings via Cal.com** | "Book a 15-min Call" CTA throughout |
 | 💳 **Stripe Subscriptions** | Three-tier pricing (Kickstart $50 · Cruise Control $150 · Full Throttle $500) |
-| ⚡ **Zapier Integration** | Demo form submissions routed to a Zapier webhook (ready to wire) |
+| ⚡ **Workflow Demo** | Landing page script generation supports the live Zap workflow demo |
 | 📋 **Lead Capture Form** | Audience-targeted form with vibe, style, and selling-point fields |
-| 📺 **YouTube / Social Proof** | Video placeholder + social media embeds (swap in your real content) |
-| 🤖 **OpenAI Scaffold** | Script preview generation endpoint ready to swap for a real OpenAI call |
+| 📺 **YouTube / Social Proof** | Embedded video showcase |
+| 🤖 **OpenAI Script Gen** | Server-side script preview generation endpoint |
 | 🔁 **Automation Marquee** | Infinite-scroll strip of every supported business type |
 | ✨ **Scroll Animations** | Framer Motion reveal animations throughout |
 
@@ -62,8 +62,8 @@ The site showcases the **AI Social Video** automation as its flagship feature wh
 | Payments | Stripe (subscriptions, test mode) |
 | Bookings | Cal.com |
 | Automation | Zapier (webhook) |
-| AI / Script Gen | OpenAI (scaffold ready) |
-| Social Video | YouTube embed (placeholder) |
+| AI / Script Gen | OpenAI |
+| Social Video | YouTube embed |
 | Deployment | Replit / Vercel / Netlify / Cloudflare Pages |
 
 ---
@@ -102,16 +102,12 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
-## Go-Live Checklist
+## Launch Notes
 
-- [ ] Replace `#booking` with your real **Cal.com** booking URL
-- [ ] Swap Stripe **test keys** (`sk_test_`) for live keys (`sk_live_`) when ready to charge
-- [ ] Wire the demo form to a real **Zapier webhook** endpoint
-- [ ] Embed real **YouTube / LinkedIn / Instagram** proof content
-- [ ] Drop a real **AI-generated video** into the video placeholder section
-- [ ] Replace the **OpenAI scaffold** with a live API call for real script generation
-- [ ] Set YouTube video privacy to **public**
-- [ ] Point to your real domain and remove Replit dev URLs
+- Stripe is wired in test mode; switch from `sk_test_` to `sk_live_` only when ready to charge.
+- Cal.com booking buttons use `NEXT_PUBLIC_CAL_LINK`.
+- OpenAI script generation uses `OPENAI_API_KEY` on the server.
+- The live app is deployed at [https://repplit-nymbl.vercel.app/](https://repplit-nymbl.vercel.app/).
 
 ---
 

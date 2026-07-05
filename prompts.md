@@ -120,11 +120,14 @@ Already wired:
 - Cal.com CTA: use NEXT_PUBLIC_CAL_LINK from .env for all "Book a 15-min Call" buttons.
 - Stripe test checkout: use STRIPE_SECRET_KEY plus STRIPE_PRICE_KICKSTART, STRIPE_PRICE_CRUISE, and STRIPE_PRICE_THROTTLE from .env.
 - OpenAI script generation: use OPENAI_API_KEY server-side to generate a 60-second script preview.
+- Demo contact capture UI: Configure Video includes name, business, email, and phone fields in the submitted payload.
+- Generate My Video CTA UI: standalone themed button below the script preview boxes, with hover color shift and motion feedback.
 - Vercel deployment: use vercel.json with SPA rewrites and dist/public output.
 - Logo asset: use public/nymbl-logo.svg for Nymbl branded artwork.
 - README live link: https://repplit-nymbl.vercel.app/
 
 Remaining future prompts:
+- Wire the Generate My Video CTA to the real video request workflow when the workflow destination is ready.
 - Wire the demo form to a real Zapier webhook when the workflow is ready to run live.
 - Replace the YouTube proof embed with the final public workflow demo video.
 - Embed real LinkedIn and Instagram proof posts once public.

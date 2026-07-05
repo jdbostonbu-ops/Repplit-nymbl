@@ -1,4 +1,4 @@
-import { useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ComponentProps, type FormEvent, type ReactNode } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Play, CheckCircle2, Video, Zap, MessageSquare, Briefcase, FormInput, SlidersHorizontal, Settings2, Sparkles, Newspaper, Workflow } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,10 @@ const AnimatedGradientText = ({ children, className = "" }: { children: ReactNod
   <span className={`bg-gradient-to-r from-cyan-400 via-primary to-pink-500 text-transparent bg-clip-text animate-gradient-xy ${className}`}>
     {children}
   </span>
+);
+
+const TestimonialDot = () => (
+  <div className="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-primary via-cyan-400 to-pink-500 animate-gradient-xy shadow-[0_0_26px_rgba(0,128,255,0.28)] ring-1 ring-white/15" />
 );
 
 const getCheckoutHref = (plan: string) => {
@@ -50,11 +54,24 @@ export default function Home() {
   const [demoState, setDemoState] = useState<"idle" | "generating" | "done">("idle");
   const [scriptError, setScriptError] = useState("");
   const [generatedScript, setGeneratedScript] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [business, setBusiness] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [promotion, setPromotion] = useState("");
   const [vibe, setVibe] = useState("exciting");
   const [presenterStyle, setPresenterStyle] = useState("expert");
   const [sellingPoint, setSellingPoint] = useState("");
+  const scriptOutputRef = useRef<HTMLDivElement>(null);
   const bookingUrl = import.meta.env.NEXT_PUBLIC_CAL_LINK?.trim() ?? "";
+
+  useEffect(() => {
+    if (!scriptOutputRef.current) {
+      return;
+    }
+
+    scriptOutputRef.current.textContent = generatedScript;
+  }, [generatedScript]);
 
   const handleGenerateScript = async (e: FormEvent) => {
     e.preventDefault();
@@ -67,6 +84,10 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          contactName,
+          business,
+          email,
+          phone,
           promotion,
           vibe,
           presenterStyle,
@@ -310,6 +331,7 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+
         </div>
       </section>
 
@@ -360,6 +382,7 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+
         </div>
       </section>
 
@@ -403,6 +426,54 @@ export default function Home() {
               </h3>
 
               <form onSubmit={handleGenerateScript} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Name</label>
+                    <Input
+                      value={contactName}
+                      onChange={(event) => setContactName(event.target.value)}
+                      placeholder="e.g., Jordan Lee"
+                      className="bg-background border-white/10 font-mono text-sm rounded-none h-12"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Business</label>
+                    <Input
+                      value={business}
+                      onChange={(event) => setBusiness(event.target.value)}
+                      placeholder="e.g., Lee Solar Co."
+                      className="bg-background border-white/10 font-mono text-sm rounded-none h-12"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Email</label>
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder="you@example.com"
+                      className="bg-background border-white/10 font-mono text-sm rounded-none h-12"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Phone</label>
+                    <Input
+                      type="tel"
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      placeholder="(555) 123-4567"
+                      className="bg-background border-white/10 font-mono text-sm rounded-none h-12"
+                      required
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">What are you promoting?</label>
                   <Input
@@ -482,39 +553,52 @@ export default function Home() {
               whileInView="visible"
               viewport={{ once: true }}
               variants={fadeUp}
-              className="bg-gradient-to-b from-card to-background border border-border p-8 min-h-[520px] relative overflow-hidden"
+              className="space-y-6"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-primary to-pink-500" />
+              <div className="bg-gradient-to-b from-card to-background border border-border p-8 min-h-[520px] relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-primary to-pink-500" />
 
-              <div className="flex items-center justify-between gap-4 mb-8">
-                <h3 className="text-2xl font-bold flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-cyan-400" />
-                  Script Preview
-                </h3>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-primary border border-primary/30 bg-primary/10 px-2 py-1">
-                  60 sec
+                <div className="flex items-center justify-between gap-4 mb-8">
+                  <h3 className="text-2xl font-bold flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-cyan-400" />
+                    Script Preview
+                  </h3>
+                  <div className="font-mono text-[10px] uppercase tracking-widest text-primary border border-primary/30 bg-primary/10 px-2 py-1">
+                    60 sec
+                  </div>
                 </div>
+
+                {demoState === "generating" && (
+                  <div className="h-[360px] flex items-center justify-center border border-white/10 bg-white/[0.03]">
+                    <div className="font-mono text-sm text-cyan-400 uppercase tracking-widest animate-pulse">Writing script...</div>
+                  </div>
+                )}
+
+                {demoState !== "generating" && generatedScript && (
+                  <div
+                    ref={scriptOutputRef}
+                    className="font-mono text-sm text-muted-foreground whitespace-pre-wrap leading-7"
+                  />
+                )}
+
+                {demoState !== "generating" && !generatedScript && (
+                  <div className="h-[360px] flex items-center justify-center text-center border border-white/10 bg-white/[0.03] p-8">
+                    <p className="font-mono text-sm text-muted-foreground max-w-md">
+                      Your timestamped OpenAI-generated script will appear here after the form runs.
+                    </p>
+                  </div>
+                )}
               </div>
 
-              {demoState === "generating" && (
-                <div className="h-[360px] flex items-center justify-center border border-white/10 bg-white/[0.03]">
-                  <div className="font-mono text-sm text-cyan-400 uppercase tracking-widest animate-pulse">Writing script...</div>
-                </div>
-              )}
-
-              {demoState !== "generating" && generatedScript && (
-                <div className="font-mono text-sm text-muted-foreground whitespace-pre-wrap leading-7">
-                  {generatedScript}
-                </div>
-              )}
-
-              {demoState !== "generating" && !generatedScript && (
-                <div className="h-[360px] flex items-center justify-center text-center border border-white/10 bg-white/[0.03] p-8">
-                  <p className="font-mono text-sm text-muted-foreground max-w-md">
-                    Your timestamped OpenAI-generated script will appear here after the form runs.
-                  </p>
-                </div>
-              )}
+              <BookingButton
+                bookingUrl={bookingUrl}
+                className="group h-16 w-full px-10 rounded-none border border-cyan-400/40 bg-gradient-to-r from-primary via-cyan-400 to-pink-500 bg-[length:300%_300%] text-black shadow-[0_0_38px_rgba(0,229,255,0.22)] animate-gradient-xy transition-all duration-300 hover:scale-[1.03] hover:from-pink-500 hover:via-primary hover:to-cyan-400 hover:text-white hover:shadow-[0_0_52px_rgba(236,72,153,0.34)] active:scale-[0.98]"
+              >
+                <span className="flex items-center justify-center gap-3 font-mono text-sm uppercase tracking-widest">
+                  <Video className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+                  Generate My Video
+                </span>
+              </BookingButton>
             </motion.div>
           </div>
         </div>
@@ -643,7 +727,7 @@ export default function Home() {
               <div className="text-4xl text-primary font-serif absolute top-4 left-4 opacity-20">"</div>
               <p className="text-lg mb-6 relative z-10 font-medium">"I used to spend 15 hours a week messing with Facebook ads and follow-up emails. Nymbl took that to zero. I closed three extra homes last month just from the time I saved."</p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/10 rounded-full" />
+                <TestimonialDot />
                 <div>
                   <div className="font-bold">Sarah Jenkins</div>
                   <div className="text-sm text-muted-foreground font-mono">Independent Realtor</div>
@@ -661,7 +745,7 @@ export default function Home() {
               <div className="text-4xl text-cyan-400 font-serif absolute top-4 left-4 opacity-20">"</div>
               <p className="text-lg mb-6 relative z-10 font-medium">"Running a dropzone means I'm in the air, not at a desk. The automated AI videos they generate from our daily jumps have doubled our tandem bookings. It's ridiculous."</p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/10 rounded-full" />
+                <TestimonialDot />
                 <div>
                   <div className="font-bold">Marcus Thorne</div>
                   <div className="text-sm text-muted-foreground font-mono">Owner, Altitude Skydiving</div>
@@ -679,7 +763,7 @@ export default function Home() {
               <div className="text-4xl text-pink-500 font-serif absolute top-4 left-4 opacity-20">"</div>
               <p className="text-lg mb-6 relative z-10 font-medium">"I make jewelry. I don't know how to code APIs or run social media calendars. Nymbl connected my Shopify to everything else and now it just... works. Like magic."</p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/10 rounded-full" />
+                <TestimonialDot />
                 <div>
                   <div className="font-bold">Elena Rostova</div>
                   <div className="text-sm text-muted-foreground font-mono">Founder, ER Studios</div>
@@ -697,7 +781,7 @@ export default function Home() {
               <div className="text-4xl text-primary font-serif absolute top-4 left-4 opacity-20">"</div>
               <p className="text-lg mb-6 relative z-10 font-medium">"Insurance follow-ups used to disappear into a spreadsheet and a prayer. Nymbl routes every quote request, sends reminders, and keeps me in front of clients before renewals sneak up."</p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/10 rounded-full" />
+                <TestimonialDot />
                 <div>
                   <div className="font-bold">Denise Carter</div>
                   <div className="text-sm text-muted-foreground font-mono">Independent Insurance Agent</div>
@@ -715,7 +799,7 @@ export default function Home() {
               <div className="text-4xl text-cyan-400 font-serif absolute top-4 left-4 opacity-20">"</div>
               <p className="text-lg mb-6 relative z-10 font-medium">"My boutique launches used to mean late nights writing captions and manually emailing VIP customers. Now the product drops, texts, posts, and follow-ups all fire together."</p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/10 rounded-full" />
+                <TestimonialDot />
                 <div>
                   <div className="font-bold">Maya Chen</div>
                   <div className="text-sm text-muted-foreground font-mono">Owner, Finch & Thread Boutique</div>
@@ -733,7 +817,7 @@ export default function Home() {
               <div className="text-4xl text-pink-500 font-serif absolute top-4 left-4 opacity-20">"</div>
               <p className="text-lg mb-6 relative z-10 font-medium">"I wanted clients on the massage table, not floating around my inbox. Nymbl handles appointment reminders, rebooking prompts, and review requests while I stay focused on the work."</p>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/10 rounded-full" />
+                <TestimonialDot />
                 <div>
                   <div className="font-bold">Alicia Moreno</div>
                   <div className="text-sm text-muted-foreground font-mono">Licensed Massage Therapist</div>
