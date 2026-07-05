@@ -32,7 +32,7 @@ loadEnvFile();
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 const openAiApiKey = process.env.OPENAI_API_KEY;
-const openAiModel = process.env.OPENAI_MODEL ?? "gpt-5.5";
+const openAiModel = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
 
 const stripePrices = {
   kickstart: process.env.STRIPE_PRICE_KICKSTART,
@@ -61,6 +61,62 @@ function getStringField(body, key) {
 
   const value = body[key];
   return typeof value === "string" ? value.trim() : "";
+}
+
+function getOpenAiErrorMessage(body) {
+  if (!isObject(body) || !isObject(body.error)) {
+    return "OpenAI script generation failed";
+  }
+
+  return getStringField(body.error, "message") || "OpenAI script generation failed";
+}
+
+function getContentText(contentItem) {
+  if (!isObject(contentItem)) {
+    return "";
+  }
+
+  const text = contentItem.text;
+
+  if (typeof text === "string") {
+    return text;
+  }
+
+  if (isObject(text)) {
+    return getStringField(text, "value");
+  }
+
+  return "";
+}
+
+function extractOpenAiScript(result) {
+  const outputText = getStringField(result, "output_text");
+
+  if (outputText) {
+    return outputText;
+  }
+
+  if (!isObject(result) || !Array.isArray(result.output)) {
+    return "";
+  }
+
+  const textParts = [];
+
+  for (const outputItem of result.output) {
+    if (!isObject(outputItem) || !Array.isArray(outputItem.content)) {
+      continue;
+    }
+
+    for (const contentItem of outputItem.content) {
+      const text = getContentText(contentItem);
+
+      if (text) {
+        textParts.push(text);
+      }
+    }
+  }
+
+  return textParts.join("\n\n").trim();
 }
 
 const basePath = (process.env.BASE_PATH ?? "/").replace(/\/$/, "") || "";
@@ -140,7 +196,6 @@ async function handleApi(req, res) {
         },
         body: JSON.stringify({
           model: openAiModel,
-          reasoning: { effort: "low" },
           max_output_tokens: 650,
           instructions: [
             "You write concise, high-converting short-form social video scripts for local service businesses.",
@@ -168,13 +223,20 @@ async function handleApi(req, res) {
 
       if (!response.ok) {
         sendJson(res, response.status, {
-          error: result?.error?.message ?? "OpenAI script generation failed",
+          error: getOpenAiErrorMessage(result),
         });
         return true;
       }
 
+      const script = extractOpenAiScript(result);
+
+      if (!script) {
+        sendJson(res, 502, { error: "OpenAI did not return a script" });
+        return true;
+      }
+
       sendJson(res, 200, {
-        script: typeof result.output_text === "string" ? result.output_text : "",
+        script,
       });
     } catch (error) {
       console.error("OpenAI script generation error:", error);

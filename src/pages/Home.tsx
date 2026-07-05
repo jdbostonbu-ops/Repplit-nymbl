@@ -428,8 +428,11 @@ export default function Home() {
               <form onSubmit={handleGenerateScript} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Name</label>
+                    <label htmlFor="contact-name" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Name</label>
                     <Input
+                      id="contact-name"
+                      name="contactName"
+                      autoComplete="name"
                       value={contactName}
                       onChange={(event) => setContactName(event.target.value)}
                       placeholder="e.g., Jordan Lee"
@@ -438,8 +441,11 @@ export default function Home() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Business</label>
+                    <label htmlFor="business" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Business</label>
                     <Input
+                      id="business"
+                      name="business"
+                      autoComplete="organization"
                       value={business}
                       onChange={(event) => setBusiness(event.target.value)}
                       placeholder="e.g., Lee Solar Co."
@@ -451,9 +457,12 @@ export default function Home() {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Email</label>
+                    <label htmlFor="email" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Email</label>
                     <Input
+                      id="email"
+                      name="email"
                       type="email"
+                      autoComplete="email"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       placeholder="you@example.com"
@@ -462,9 +471,12 @@ export default function Home() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Phone</label>
+                    <label htmlFor="phone" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Phone</label>
                     <Input
+                      id="phone"
+                      name="phone"
                       type="tel"
+                      autoComplete="tel"
                       value={phone}
                       onChange={(event) => setPhone(event.target.value)}
                       placeholder="(555) 123-4567"
@@ -475,8 +487,10 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">What are you promoting?</label>
+                  <label htmlFor="promotion" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">What are you promoting?</label>
                   <Input
+                    id="promotion"
+                    name="promotion"
                     value={promotion}
                     onChange={(event) => setPromotion(event.target.value)}
                     placeholder="e.g., Summer Solar Installation Promo"
@@ -487,9 +501,9 @@ export default function Home() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">What vibe?</label>
-                    <Select value={vibe} onValueChange={setVibe}>
-                      <SelectTrigger className="bg-background border-white/10 font-mono text-sm rounded-none h-12">
+                    <label htmlFor="vibe" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">What vibe?</label>
+                    <Select name="vibe" value={vibe} onValueChange={setVibe}>
+                      <SelectTrigger id="vibe" className="bg-background border-white/10 font-mono text-sm rounded-none h-12">
                         <SelectValue placeholder="Select vibe" />
                       </SelectTrigger>
                       <SelectContent>
@@ -502,9 +516,9 @@ export default function Home() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Presenter Style?</label>
-                    <Select value={presenterStyle} onValueChange={setPresenterStyle}>
-                      <SelectTrigger className="bg-background border-white/10 font-mono text-sm rounded-none h-12">
+                    <label htmlFor="presenter-style" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Presenter Style?</label>
+                    <Select name="presenterStyle" value={presenterStyle} onValueChange={setPresenterStyle}>
+                      <SelectTrigger id="presenter-style" className="bg-background border-white/10 font-mono text-sm rounded-none h-12">
                         <SelectValue placeholder="Select style" />
                       </SelectTrigger>
                       <SelectContent>
@@ -518,8 +532,10 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Key selling point?</label>
+                  <label htmlFor="selling-point" className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Key selling point?</label>
                   <Textarea
+                    id="selling-point"
+                    name="sellingPoint"
                     value={sellingPoint}
                     onChange={(event) => setSellingPoint(event.target.value)}
                     placeholder="e.g., 0% down financing available until August 1st."

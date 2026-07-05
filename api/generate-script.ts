@@ -14,48 +14,101 @@ type JsonResponse = {
   error?: string;
 };
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 
-const getStringField = (body: unknown, key: string): string => {
+function getStringField(body: unknown, key: string): string {
   if (!isRecord(body)) {
     return "";
   }
 
   const value = body[key];
   return typeof value === "string" ? value.trim() : "";
-};
+}
 
-const getOpenAiErrorMessage = (body: unknown): string => {
+function getOpenAiErrorMessage(body: unknown): string {
   if (!isRecord(body) || !isRecord(body.error)) {
     return "OpenAI script generation failed";
   }
 
   const message = body.error.message;
   return typeof message === "string" ? message : "OpenAI script generation failed";
-};
+}
 
-const createJsonResponse = (body: JsonResponse, status: number): Response =>
-  new Response(JSON.stringify(body), {
+function createJsonResponse(body: JsonResponse, status: number): Response {
+  return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json" },
   });
+}
 
-const buildScriptRequest = (body: unknown): ScriptRequest => ({
-  promotion: getStringField(body, "promotion"),
-  vibe: getStringField(body, "vibe"),
-  presenterStyle: getStringField(body, "presenterStyle"),
-  sellingPoint: getStringField(body, "sellingPoint"),
-});
+function buildScriptRequest(body: unknown): ScriptRequest {
+  return {
+    promotion: getStringField(body, "promotion"),
+    vibe: getStringField(body, "vibe"),
+    presenterStyle: getStringField(body, "presenterStyle"),
+    sellingPoint: getStringField(body, "sellingPoint"),
+  };
+}
 
-const createOpenAiPrompt = (requestBody: ScriptRequest): string =>
-  [
+function createOpenAiPrompt(requestBody: ScriptRequest): string {
+  return [
     `Promotion: ${requestBody.promotion}`,
     `Vibe: ${requestBody.vibe}`,
     `Presenter style: ${requestBody.presenterStyle}`,
     `Key selling point: ${requestBody.sellingPoint}`,
     "Write a polished 60-second social video script.",
   ].join("\n");
+}
+
+function getContentText(contentItem: unknown): string {
+  if (!isRecord(contentItem)) {
+    return "";
+  }
+
+  const text = contentItem.text;
+
+  if (typeof text === "string") {
+    return text;
+  }
+
+  if (isRecord(text)) {
+    return getStringField(text, "value");
+  }
+
+  return "";
+}
+
+function extractOpenAiScript(result: unknown): string {
+  const outputText = getStringField(result, "output_text");
+
+  if (outputText) {
+    return outputText;
+  }
+
+  if (!isRecord(result) || !Array.isArray(result.output)) {
+    return "";
+  }
+
+  const textParts: string[] = [];
+
+  for (const outputItem of result.output) {
+    if (!isRecord(outputItem) || !Array.isArray(outputItem.content)) {
+      continue;
+    }
+
+    for (const contentItem of outputItem.content) {
+      const text = getContentText(contentItem);
+
+      if (text) {
+        textParts.push(text);
+      }
+    }
+  }
+
+  return textParts.join("\n\n").trim();
+}
 
 export default async function handler(request: Request): Promise<Response> {
   if (request.method !== "POST") {
@@ -63,7 +116,7 @@ export default async function handler(request: Request): Promise<Response> {
   }
 
   const openAiApiKey = process.env.OPENAI_API_KEY;
-  const openAiModel = process.env.OPENAI_MODEL ?? "gpt-5.5";
+  const openAiModel = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
 
   if (!openAiApiKey) {
     return createJsonResponse({ error: "Missing OPENAI_API_KEY" }, 500);
@@ -90,7 +143,6 @@ export default async function handler(request: Request): Promise<Response> {
       },
       body: JSON.stringify({
         model: openAiModel,
-        reasoning: { effort: "low" },
         max_output_tokens: 650,
         instructions: [
           "You write concise, high-converting short-form social video scripts for local service businesses.",
@@ -114,9 +166,7 @@ export default async function handler(request: Request): Promise<Response> {
       return createJsonResponse({ error: getOpenAiErrorMessage(result) }, openAiResponse.status);
     }
 
-    const script = isRecord(result) && typeof result.output_text === "string"
-      ? result.output_text
-      : "";
+    const script = extractOpenAiScript(result);
 
     if (!script) {
       return createJsonResponse({ error: "OpenAI did not return a script" }, 502);
